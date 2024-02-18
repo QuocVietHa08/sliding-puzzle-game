@@ -28,6 +28,8 @@ export class PuzzleView {
         this.puzzle.classList.add('puzzle');
 
         this.puzzle.style.backgroundImage = `url(${this.image})`;
+        this.puzzle.style.backgroundSize = 'auto';
+        this.puzzle.style.backgroundRepeat = 'no-repeat';
         this.puzzle.style.backgroundPositionX = `-${this.imageY * this.size}px`;
         this.puzzle.style.backgroundPositionY = `-${this.imageX * this.size}px`;
     }

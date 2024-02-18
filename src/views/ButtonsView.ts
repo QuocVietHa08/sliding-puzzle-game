@@ -22,6 +22,7 @@ export class ButtonsView {
 
             this.board.shuffleBoard();
             this.boardView.generetePuzzles();
+            this.boardView.resetPoint();
         });
         btn.textContent = 'shuffle';
         this.buttonsPanel.appendChild(btn);

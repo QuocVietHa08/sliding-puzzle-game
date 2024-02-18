@@ -6,16 +6,23 @@ import JSConfetti from 'js-confetti';
 
 export class BoardView {
     puzzleBox: HTMLElement;
+    originalImage: HTMLElement;
+    wrapperImage: HTMLElement;
     wrapper = document.querySelector('.wrapper');
     showHelpers: boolean;
     confetti: JSConfetti;
     isSolving: boolean;
+    pointBox: HTMLElement;
+    point: number;
 
     constructor(private board: Board, private size: number, private imageSrc: string) {
         this.wrapper = document.querySelector('.wrapper');
         this.confetti = new JSConfetti();
-
+        this.point = 0;
+        this.createPointView();
         this.createBoard();
+        this.addOriginalImage();
+        this.createWrapperImage();
         this.generetePuzzles();
         this.puzzleBox.addEventListener('click', (e) => this.handleUserClick(e));
     }
@@ -75,6 +82,7 @@ export class BoardView {
     moveElement(value1: number, value2: number): void {
         const element1 = this.puzzleBox.querySelector(`[data-value='${value1}'`) as HTMLElement;
         const element2 = this.puzzleBox.querySelector(`[data-value='${value2}'`) as HTMLElement;
+        this.point = this.point + 1;
 
         const tempTop = element1.style.top;
         const tempLeft = element1.style.left;
@@ -84,6 +92,7 @@ export class BoardView {
 
         element2.style.top = tempTop;
         element2.style.left = tempLeft;
+        this.updateUserPoint();
     }
 
     animateSolving(movesIndexes: number[]): void {
@@ -99,5 +108,42 @@ export class BoardView {
         });
 
         if (movesIndexes.length === 0) this.isSolving = false;
+    }
+    addOriginalImage(): void {
+        this.originalImage = document.createElement('div');
+        this.originalImage.id = 'original-image';
+        this.originalImage.style.backgroundImage = `url(${this.imageSrc})`;
+        this.originalImage.style.height = `${this.size}px`;
+        this.originalImage.style.width = `${this.size}px`;
+        this.wrapper.appendChild(this.originalImage);
+    }
+    createWrapperImage(): void {
+        this.wrapperImage = document.createElement('div');
+        this.wrapperImage.id = 'wrapper-image';
+        this.wrapperImage.style.display = 'flex';
+        this.wrapperImage.style.justifyContent = 'center';
+        this.wrapperImage.style.alignItems = 'center';
+        this.wrapperImage.style.gap = '50px';
+        this.wrapperImage.style.marginTop = '20px';
+        this.wrapperImage.style.marginBottom = '20px';
+        this.wrapperImage.appendChild(this.puzzleBox);
+        this.wrapperImage.appendChild(this.originalImage);
+        this.wrapper.appendChild(this.wrapperImage);
+    }
+    createPointView(): void {
+        this.pointBox = document.createElement('div');
+        this.pointBox.id = 'point-box';
+        this.pointBox.style.display = 'flex';
+        this.pointBox.style.justifyContent = 'center';
+        this.pointBox.style.alignItems = 'center';
+        this.pointBox.style.color = 'white';
+        this.pointBox.innerHTML = `Your current move is: ${this.point?.toString()}`;
+        this.wrapper.appendChild(this.pointBox);
+    }
+    updateUserPoint(): void {
+        this.pointBox.innerHTML = `Your current move is: ${this.point?.toString()}`;
+    }
+    resetPoint(): void {
+        this.pointBox.innerHTML = `Your current move is: 0`;
     }
 }
